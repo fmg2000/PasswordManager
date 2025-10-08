@@ -1,0 +1,40 @@
+
+.CardAuth1{
+   display: flex;
+   justify-content: center;  /* centrează orizontal */
+   align-items: flex-start;      /* centrează vertical */
+   height: 100vh;            /* ia toată înălțimea ecranului */
+   width: 100%;              /* ia toată lățimea ecranului */
+   background: #f9f9f9;      /* opțional, un fundal */
+}
+
+.CardAuth2{
+   margin-top: 50px;
+   display: flex;
+   flex-direction: column;   /* titlul și loginul pe coloană */
+   align-items: center;
+   width: fit-content;
+   height: fit-content;
+   gap: 20px;
+   padding:20px;
+   border: solid 1px gray;
+   border-radius: 8px;       /* opțional: colțuri rotunjite */
+   background: #fff;         /* opțional: fundal alb pt card */
+}
+
+.LoginButon{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.LoginButon button {
+  min-width: 200px; /* ambele butoane vor avea aceeași lățime */
+  margin-top:10px;
+}
+
+.errorMessage{
+    display: flex;
+    justify-content: center;
+    color: red;
+}
