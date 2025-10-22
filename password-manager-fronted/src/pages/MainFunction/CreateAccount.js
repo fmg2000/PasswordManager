@@ -3,33 +3,121 @@ import styles from "../Menu.module.css";
 
 import {useState} from "react"
 import { getSessionKey } from "../Crypto/SeesionKey";
+import {encryptEntryKey} from "../Crypto/Crypto";
+import { replace, useNavigate } from "react-router-dom";
 
 
 function CreateAccount(){
+
+    const[showAlert, setShowAlert] = useState(false);
+    const[showPass ,setShowPass] = useState(false);
+    const[errorMessage, setErrorMessage] = useState("");
     
-    const[showPass ,setShowPass] = useState(false)
     const[domain, setDomain] = useState("");
     const[username, setUsername] = useState("");  
-    const[pass, setPass] = useState("");      
+    const[pass, setPass] = useState("");   
     
     const key = getSessionKey();
 
-    const generatePass =() =>{
-      /// implement  
-    }
+    const navigate = useNavigate();
+    
+    const obj = {
+        domain: domain,
+        username:username,
+        passwordCrypt:"",
+        iv:"",
+    };
 
+    //buton de ascundere password folosind {verify? aaa:bbb}
     const hidePass =() =>{
         setShowPass(!showPass)
-    }
+    };
 
-    const registerSubmit = (e) =>{
+    //apelam server pentru creare de password
+    const generatePass = async (e) =>{
+            try{
+
+                const token = localStorage.getItem("accessToken")
+                const response = await fetch("http://localhost:8080/generate/password", {
+                    method:"GET",
+                    headers: {"Authorization": `Bearer ${token}`}
+                });
+
+                if(response.ok){
+                    setPass(await response.text());
+                    return;
+                }
+
+                if(response.status == 401){
+                    localStorage.removeItem("accessToken");
+                    navigate("/auth", {replace : true});
+                    return;
+                }
+
+            }
+            catch(e){
+                localStorage.removeItem("accessToken");
+                navigate("/auth", {replace : true}); // navigeaza la auth si sterge history inlocuieste 
+            }
+    };
+
+    //apelam server pentru adaugare vault  
+    const registerSubmit = async (e) =>{
             e.preventDefault();
             
+            const objencrypt = await encryptEntryKey(pass,key);
+            obj.passwordCrypt = objencrypt.ciphertext;
+            obj.iv = objencrypt.iv;
+            console.log(obj);
+            
+            const token = localStorage.getItem("accessToken");
 
+            try{
+                const response = await fetch("http://localhost:8080/vault/create", {
+                    method:"POST",
+                    headers:{"Content-Type" : "application/json",
+                            "Authorization" : `Bearer ${token}`},
+                    body: JSON.stringify(obj)
+                });
+                const message = await response.text()    
+                console.log(message);
+                if(response.ok){
+                    setShowAlert(true); // facem timeout de o secunda pentru animatie 
+                     const timeout = setTimeout(()=>{
+                            setShowAlert(false);
+                            setErrorMessage("");
+                            setDomain("");
+                            setPass("");
+                            setUsername("");
+                    },1000);    
+                }
+                
+                if(response.status == 400){   
+                     setErrorMessage(message);
+                     return;
+                }
+                
+                if(response.status == 401){
+                    localStorage.removeItem("accessToken");
+                    navigate("/auth",  { replace: true });
+                    return;
+                }
+            }
+            catch(e){
+                localStorage.removeItem("accessToken");
+                navigate("/auth",  { replace: true }); // înlocuiește ruta curentă;
+            }
     };
 
     return(
         <div className={styles.containerInfo}>
+             {showAlert ? (
+                    <div className={styles.alertOverlay}>
+                        <div className={styles.saveAlert}>
+                          <p>Success...</p>
+                        </div>
+                    </div>
+                  ):null}
            <h2>Create Account</h2>
             <form onSubmit={registerSubmit}>
                 <div className="form-group">
@@ -51,12 +139,11 @@ function CreateAccount(){
                     </div>
                     <small className="form-text text-muted">Password must contain Az!2</small>
                 </div>
-
+                
                 <div className={styles.button}>
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </div>
-
-
+                {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
 
             </form>
         </div>

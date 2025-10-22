@@ -25,7 +25,7 @@ export async function deriveKey(masterPassword, saltB64) {
     { name: "PBKDF2", hash: "SHA-256", salt, iterations: PBKDF2_ITERATIONS }, // cum fac derivarea
     pwKey, // cheia de baza din master
     { name: "AES-GCM", length: AES_KEY_BITS }, // cheia de final ce tip vreau
-    false, // chiea exportabila = false
+    false, // chiea exportabila
     ["encrypt", "decrypt"] // key - permisunea de encrypt decrypt
   );
   return  { key, saltB64: toB64(salt) };
@@ -43,9 +43,26 @@ export async function encryptEntry(plaintextPassword, masterPassword, existsaltB
   };
 }
 
+
 // 3) Decriptează un entry din DB -> parola în clar
 export async function decryptEntry(entry, masterPassword) {
   const { key } = await deriveKey(masterPassword, entry.salt);
   const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromB64(entry.iv) }, key, fromB64(entry.ciphertext));
+  return dec.decode(pt);
+}
+
+
+export async function encryptEntryKey(plaintextPassword, key) {
+  const iv = crypto.getRandomValues(new Uint8Array(IV_BYTES)); // IV - previne repetitia
+  const ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, enc.encode(plaintextPassword));
+  return {
+    ciphertext: toB64(ct), // conține și authentication tag
+    iv: toB64(iv),
+  };
+}
+
+
+export  async function decryptEntryKey(ciphertext ,iv, key) {
+  const pt =  await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromB64(iv) }, key, fromB64(ciphertext));
   return dec.decode(pt);
 }

@@ -7,11 +7,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-
 @Component
 public class Sha256PasswordEncoder implements PasswordEncoder {
     @Override
     public String encode(CharSequence rawPassword) {
+
         ///  Cream hash cu MessageDigest, rezultatul din byte il transformam cu hexa
         /// hexString.append(String.format("%02x", b)); %x transformare hexa,2 - minim 2 caractere , 0 - se pune zero daca trebuie in fata
         MessageDigest md = null;
@@ -20,18 +20,29 @@ public class Sha256PasswordEncoder implements PasswordEncoder {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+        // Convertim parola din text în bytes și calculăm hash-ul (digest)
         byte[] hash = md.digest(rawPassword.toString().getBytes(StandardCharsets.UTF_8));
         StringBuilder hexString = new StringBuilder();
         for (byte b : hash) {
-            hexString.append(String.format("%02x", b));
+            hexString.append(String.format("%02x", b));    // transformam din bytes in hex formatat ca si string
         }
         return hexString.toString();
     }
 
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
+
         /// Cream din nou hash-ul si il comparam cu cel din DB
         String hashedInput = encode(rawPassword);
         return hashedInput.equals(encodedPassword);
     }
 }
+
+
+////  private static final SecureRandom RANDOM = new SecureRandom();
+///
+///     public String generateSalt() {
+///         byte[] salt = new byte[16];
+///         RANDOM.nextBytes(salt);
+///         return Base64.getEncoder().encodeToString(salt);
+///     }

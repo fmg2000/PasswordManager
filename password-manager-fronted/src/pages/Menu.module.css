@@ -1,3 +1,4 @@
+
 .container{
     display: flex;
     flex-direction: row;
@@ -5,6 +6,9 @@
 }
 
 .sidebar{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   flex: 0 0 240px;      /* lățime fixă pentru bară fara sa creasca/scada flex-grow/flex-shrink */
   position: sticky;    /*se lipestede marginea de sus */
   top: 0;
@@ -46,6 +50,22 @@
     padding: 20px;
     
 }
+
+.logoutButton{
+  background-color: #fafafa;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px; /* mic spațiu față de meniu */
+}
+.logoutButton:hover{
+  background-color: #f4f6f8;
+}
+
+
+/**/
 
 .containerInfo{
 
@@ -108,4 +128,212 @@
     display: flex;
     justify-content: center;
     color: red;
+}
+
+.errorText{
+  color: red;
+}
+
+/**Page List */
+
+
+.search{
+  margin: 15px 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;         /* aliniază vertical */
+  gap: 10px;                   /* spațiu între elemente, dacă ai și un buton */
+}
+
+.textSearch{
+  font-size: 20px;             /* în loc de size */
+  font-weight: 500;
+}
+
+.inputSearch{
+  font-size: 16px;             /* mărimea textului în input */
+  padding: 8px 12px;           /* „înălțimea” vizuală */
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  outline: none;            
+}
+
+
+.card{
+  overflow: hidden; 
+  width: 70%;
+  border: outset rgba(0, 0, 0, 0.192);
+  border-radius: 10px;
+  padding: 14px;
+  margin: 10px;
+
+}
+
+.card:hover {
+  transform: translateY(-1px);
+  border-color: #3086f089;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.domain {
+  font-weight: 600;
+  color: #1f2937; /* gri-închis */
+}
+.subtle {
+  font-size: 12px;
+  color: #6b7280; /* gri mediu */
+}
+.timer{
+  margin:12px 0 6px; 
+  font-weight: 600;
+  color: #6985df;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px dashed #999a9b;
+}
+
+/* Etichete și valori */
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.value {
+  color: #111827;
+  font-weight: 500;
+  white-space: nowrap;
+
+}
+
+/**VaultPage**/
+
+.page { display:flex; 
+    flex-direction:column; 
+    gap:16px; 
+    padding:24px;
+}
+
+.saveAlert{
+  background: rgba(255, 255, 255, 0.74);
+  padding: 20px 30px;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.3);
+
+}
+
+.deleteAlert{
+  background: rgba(255, 255, 255, 0.74);
+  padding: 20px 30px;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.3);
+}
+
+.actionsAlert{
+  margin: 0 30px;
+  display: flex;
+  justify-content: space-between;
+  
+}
+
+.header {
+  display:flex; 
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0; 
+  border-bottom:1px solid #d6d6d6;
+}
+.subtitle { 
+    margin:4px 0 0; 
+    color:#666; 
+    font-size:15px; 
+}
+.actions{
+    display: flex;
+    gap: 5px;
+}
+
+.grid {
+  display:grid; 
+  gap:16px;
+  grid-template-columns: 1fr; 
+}
+
+.cardPage{ 
+    background:#fff; 
+    border:1px solid #eee; 
+    border-radius:12px; 
+    padding:16px; 
+}
+.sectionTitle { 
+    margin-top:0; 
+    margin-bottom:12px; 
+}
+.labelPage{ 
+    display:block; 
+    margin:12px 0 6px; 
+    font-weight:600; 
+}
+.input{
+  width:100%; 
+  border:1px solid #ddd; 
+  border-radius:8px;
+  padding:10px 12px; 
+  font-size:0.95rem;
+}
+.labelPassword{
+  flex: 1 1 auto;
+  border:1px solid #ddd; 
+  border-radius:8px;
+  padding:10px 12px; 
+  font-size:0.95rem;
+}
+.footer {
+  display:flex; 
+  justify-content:space-between; 
+  align-items:center;
+  padding-top:12px; 
+  border-top:1px solid #eee;
+}
+
+/*Home*/
+.homeinfo {
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 20px;
+  text-align: left;
+  line-height: 1.6;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #333;
+}
+
+.homeinfo h2{
+  padding: 20px;
+  color: #05101a;
+  text-align: center;
+}
+
+.homeinfo strong{
+  color: #bb3737;
 }

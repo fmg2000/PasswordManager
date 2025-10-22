@@ -2,6 +2,7 @@ import { Routes, Route, NavLink , Navigate} from "react-router-dom";
 import Listitem from "./MainFunction/ListItem.js";
 import CreateAccount from "./MainFunction/CreateAccount.js";
 import Home from "./MainFunction/Home.js";
+import VaultPage from "./MainFunction/VaultPage.js";
 import styles from "./Menu.module.css";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -11,6 +12,7 @@ import { setSessionKey } from "./Crypto/SeesionKey.js";
  
 function Menu(){
 
+    console.log("[MENU] component mounted");
     const [meta, setMeta] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
     const [pass, setPassword] = useState("");
@@ -18,24 +20,27 @@ function Menu(){
     const [counter, setCounter] = useState(0);
     const navigate = useNavigate();
 
+    // se apelaza la creare primim metadatele si la fiecare clik pe nav counter s emodifica se apeleaza din nou 
     useEffect(() => {
 
+        
         const fetchData = async () =>{
             const token = localStorage.getItem("accessToken");
             if(!token){
-                navigate("/auth");
+                navigate("/auth" ,{replace : true});
                 return;
             }
 
+            // verificam auth
             const validToken = await checkAuth(token);
             if (!validToken) {
                 localStorage.removeItem("accessToken");
-                navigate("/auth");
+                navigate("/auth" ,{replace : true});
                 return;
             }
 
             if (counter === 0) {
-                await getMeta(token);
+                await getMeta(token); // primim metadatele
                 setShowAlert(true);
             }
 
@@ -44,6 +49,7 @@ function Menu(){
     
     },[counter]);
 
+    //verificam authentificarea
     async function checkAuth(token) {
 
         try {
@@ -57,6 +63,7 @@ function Menu(){
         }
     }
     
+    // luam metadatele
     async function getMeta(token) {
 
          try
@@ -72,7 +79,7 @@ function Menu(){
                 if(rez.status == 401){
 
                     localStorage.removeItem("accessToken");
-                    navigate("/auth")
+                    navigate("/auth" ,{replace : true});
                     return;
                 }
 
@@ -82,11 +89,12 @@ function Menu(){
                 }
            }
         catch(e){
-                navigate("/auth");
+                navigate("/auth" ,{replace : true});
             }
     }
 
 
+    //verificam passwordmaster daca nu exista setam si cream metadatele daca exista verificam 
     const submit = async () =>{
         
         const token = localStorage.getItem("accessToken");
@@ -100,7 +108,7 @@ function Menu(){
             
             const response = await fetch("http://localhost:8080/user/encript",{
                 
-                    method:"POST",
+                    method:"PUT",
                     headers:{
                            "Content-type": "application/json",
                             "Authorization" : `Bearer ${token}` },
@@ -109,14 +117,14 @@ function Menu(){
             
             if(response.status == 401){
                     localStorage.removeItem("accessToken");
-                    navigate("/auth")
+                    navigate("/auth" ,{replace : true});
                     return;
                 }
 
             if(response.ok){
                 setShowAlert(false);
-                const { key } = await deriveKey(pass, meta.saltMaster);
-                setSessionKey(key);
+                const obj = await deriveKey(pass, meta.saltMaster);
+                setSessionKey(obj.key);
             }
                 
         }
@@ -126,7 +134,7 @@ function Menu(){
                 const validToken = await checkAuth(token);
                 if (!validToken) {
                     localStorage.removeItem("accessToken");
-                    navigate("/auth");
+                    navigate("/auth" ,{replace : true});
                     return;
                 }
 
@@ -135,8 +143,8 @@ function Menu(){
                 const decrypt = await decryptEntry(objdecrypt,pass)
                 if(decrypt == "OK"){
     
-                    const { key , saltkey} = await deriveKey(pass, meta.saltMaster);
-                    setSessionKey(key);
+                    const obj = await deriveKey(pass, meta.saltMaster);
+                    setSessionKey(obj.key);
                     setShowAlert(false);
                 }
               }
@@ -149,6 +157,12 @@ function Menu(){
 
     const setClick =() =>{
         setCounter(prev => prev + 1);
+    }
+
+
+    const logoutButton = ()=>{
+        localStorage.clear();
+        navigate("/auth" ,{replace : true});
     }
 
     return(
@@ -172,13 +186,16 @@ function Menu(){
                 ):null}
             <div className={styles.container}>
                 <div className={styles.sidebar}>
-                    <h3 className={styles.titlebar}>PasswordManager</h3>
-                    <nav className="nav flex-column">
-                        {/* isActive functie data de NavLink daca link este pe ruta respectiva  */}
-                            <NavLink to="/menu/home" end className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)} onClick={setClick}>Home</NavLink>
-                            <NavLink to="/menu/list" className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}onClick={setClick}>My Accounts</NavLink>
-                            <NavLink to="/menu/new-account" className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}onClick={setClick}>New Account</NavLink>                
-                    </nav>
+                    <div>
+                        <h3 className={styles.titlebar}>PasswordManager</h3>
+                        <nav className="nav flex-column">
+                            {/* isActive functie data de NavLink daca link este pe ruta respectiva  */}
+                                <NavLink to="/menu/home" end className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)} onClick={setClick}>Home</NavLink>
+                                <NavLink to="/menu/list" className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)} onClick={setClick}>My Accounts</NavLink>
+                                <NavLink to="/menu/new-account" className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}onClick={setClick}>New Account</NavLink>                
+                        </nav>
+                    </div>
+                    <button type= "button" className={styles.logoutButton} onClick={logoutButton}>Logout</button>
                 </div>
                 <div className={styles.content}>
                     <Routes>
@@ -186,6 +203,7 @@ function Menu(){
                         <Route path="list" element={<Listitem />}/>
                         <Route path="new-account" element={<CreateAccount />}/>
                         <Route path="home" element={<Home />}/>
+                        <Route path="item/:id" element={<VaultPage />} />
                     </Routes>
                 </div>
             </div>

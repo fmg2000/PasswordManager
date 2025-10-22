@@ -7,7 +7,7 @@ function Auth(){
     return(
         <div className={styles.CardAuth1}>
             <div className={styles.CardAuth2}> 
-        <Routes>
+        <Routes> {/*rutele aici is componentele copi */}
             <Route path="/" element={<Navigate to="login" replace />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />

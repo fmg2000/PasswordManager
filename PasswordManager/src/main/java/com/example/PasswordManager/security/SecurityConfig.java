@@ -16,6 +16,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+/**
+ * Configurația principală de securitate Spring Security.
+ * - setează autentificarea (UserDetailsService + PasswordEncoder)
+ * - definește regulile de autorizare / endpoints publice
+ * - setează filtrul JWT și politica de sesiune (stateless)
+ * */
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +38,8 @@ public class SecurityConfig{
         return new Sha256PasswordEncoder();
     }
 
-    ///verifica parola si username
+
+    ///  Provider care știe cum să autentifice utilizatorul (username + password) din DB
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
@@ -54,11 +61,12 @@ public class SecurityConfig{
         return http.build();
     }
 
-    ///login prin API-ul tău
+    /**
+     * Expune AuthenticationManager din configurația Spring Security.
+     * Folosit la autentificarea în controller (login).
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
-
     }
 }
-

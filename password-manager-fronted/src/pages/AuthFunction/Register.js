@@ -24,6 +24,7 @@ function Register(){
         navigate("/auth/login");
     };
 
+
     const registerSubmit = async (e) =>{
         e.preventDefault();
         setErrorMessage("");
@@ -32,6 +33,7 @@ function Register(){
         console.log("Parola:", pass1);
         console.log("Confirmare:", pass2);
 
+        //verificam parola 1 si 2 sa se potriveasca 
         if (pass1 !== pass2) {
         setErrorMessage("Password not matching");
         return;
@@ -39,6 +41,7 @@ function Register(){
 
         
         try{
+            // request la server
             const res = await fetch("http://localhost:8080/auth/register", {
                 
                 method:"POST",
@@ -76,7 +79,7 @@ function Register(){
                 <div className="form-group">
                     <label htmlFor="exampleInputPassword1">Password</label>
                     <input type="password" className="form-control" id="exampleInputPassword1" value={pass1} onChange={(e) => setPass1(e.target.value)}/>
-                    <small id="passwordHelp" className="form-text text-muted">Password must contain Az!2</small>
+                    <small id="passwordHelp" className="form-text text-muted">Password must include A–Z, a–z, 0–9, a special character (!@#$, etc.), and be at least 8 characters long</small>
                 </div>
 
                 <div className="form-group">

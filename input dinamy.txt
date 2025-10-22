@@ -1,0 +1,21 @@
+  const setExpect = (id,field,param) ={
+
+        const newlist = listItem.map(item ={
+            if(item.id == id)
+                return{ ...item, [field] param};
+            return item;
+        });
+        setListItem(newlist);
+
+    };
+      const editButton = () ={
+        
+        setEdit(prev = !prev);
+        
+    };
+
+
+<input type = "text" readOnly={edit} value = {item.domain} onChange={(e) => setExpect(item.id,"domain",e.target.value)}/>
+<input type = "text" readOnly={edit} value = {item.username} onChange={(e) => setExpect(item.id,"username",e.target.value)}/>
+<input type = "text" readOnly={edit} value = {item.passwordCrypt} onChange={(e) => setExpect(item.id,"passwordCrypt",e.target.value)}/>
+<button type="button" className="btn btn-outline-secondary" onClick={editButton}>Edit</button>

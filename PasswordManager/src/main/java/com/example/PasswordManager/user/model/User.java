@@ -1,6 +1,13 @@
 package com.example.PasswordManager.user.model;
 
+import com.example.PasswordManager.vault.model.Vault;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
 
 @Entity
 @Table(name="users")
@@ -37,7 +44,6 @@ public class User {
         this.verifyIv = verifyIv;
     }
 
-    /// Setter and Getter
     public Long getId() {
         return id;
     }
@@ -85,4 +91,5 @@ public class User {
     public void setVerifyIv(String verifyIv) {
         this.verifyIv = verifyIv;
     }
+
 }

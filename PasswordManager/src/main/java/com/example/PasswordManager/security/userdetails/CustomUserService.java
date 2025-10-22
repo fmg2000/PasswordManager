@@ -8,6 +8,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementarea standard a UserDetailsService:
+ * - primește username
+ * - caută utilizatorul în DB
+ * - mapează entitatea User -> UserDetails (UserPrincipal)
+ */
+
 @Service
 public class CustomUserService implements UserDetailsService {
 
@@ -17,7 +24,6 @@ public class CustomUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        System.out.println(username+"load");
         User user = userRepository.findByUsername(username);
         if(user == null){
             System.out.println("User not found");

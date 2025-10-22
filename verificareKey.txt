@@ -1,0 +1,32 @@
+              // Exportăm cheile în bytes (ArrayBuffer)
+        // -> cheia trebuie să fie creată cu exportable: true
+
+        const obj = await deriveKey("admin","rHXJrCFnXKX/gWZYHRZ+Hw==")
+        const raw1 = await crypto.subtle.exportKey("raw", key);
+        const raw2 = await crypto.subtle.exportKey("raw", obj.key);
+
+
+
+        // Le convertim în tablouri de bytes pentru comparație
+        const a = new Uint8Array(raw1);
+        const b = new Uint8Array(raw2);
+
+        // Dacă lungimea diferă → clar cheile nu sunt identice
+        if (a.length !== b.length) {
+            console.log("❌ Cheile NU sunt identice (dimensiuni diferite)");
+            return false;
+        }
+
+        // Verificăm byte cu byte
+        for (let i = 0; i < a.length; i++) {
+            if (a[i] !== b[i]) {
+            console.log(`❌ Cheile diferă la byte-ul ${i}`);
+            return false;
+            }
+        }
+
+  console.log(Cheile sunt identice (conținutul coincide)");
+  const passwordDecrypt = await decryptEntryKey(entity.passwordCrypt, entity.iv, key);
+  console.log (passwordDecrypt)
+
+  return true;

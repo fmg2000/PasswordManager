@@ -6,6 +6,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Adapter între entitatea ta User din DB și modelul Spring Security (UserDetails).
+ * Oferă către Spring Security parola (hash), username-ul și autoritățile (rolurile).
+ */
 public class UserPrincipal implements UserDetails {
 
     private User user;

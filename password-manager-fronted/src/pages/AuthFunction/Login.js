@@ -23,7 +23,7 @@ function Login(){
         };
 
         const goToHome = () => {
-            navigate("/menu");
+            navigate("/menu", {replace: true});
         };
 
                 
@@ -32,7 +32,8 @@ function Login(){
             setErrorMessage("");
 
             try
-            {
+            {   
+                /// facem request la url...
                 const rez = await fetch("http://localhost:8080/auth/login", {
                     method:"POST",
                     headers: {"Content-Type": "application/json" },
@@ -40,13 +41,15 @@ function Login(){
                     });
 
                 const msg = await rez.text();
-                console.log("salut");
-                if(rez.ok){
-                    localStorage.setItem("accessToken", msg);
-                    goToHome();
+                
+                if(!rez.ok){
+                   setErrorMessage(msg || "Login failed");
+                    return;
                 }
-                else
-                    setErrorMessage(msg);
+
+                localStorage.setItem("accessToken", msg);
+                goToHome();
+                
 
             }catch (error){
                 setErrorMessage("Conenction failed");
